@@ -12,8 +12,8 @@ const svg1_RENAME = d3
   .append("g")
   .attr("transform", `translate(${margin.left},${margin.top})`);
 
-const svg2_RENAME = d3
-  .select("#lineChart2")
+const svgBar = d3
+  .select("#BarChart1")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
@@ -30,6 +30,7 @@ d3.csv("data/weather.csv").then((data) => {
   data.forEach((d) => {
     d.date = d3.timeParse("%m/%d/%Y")(d.date);
     d.average_max_temp = +d.average_max_temp;
+    d.actual_precipitation = +d.actual_precipitation;
   });
 
   // Group data by city
@@ -38,7 +39,7 @@ d3.csv("data/weather.csv").then((data) => {
     city: city,
     values: data
       .filter((d) => d.city === city)
-      .map((d) => ({ date: d.date, temp: d.average_max_temp })),
+      .map((d) => ({ date: d.date, temp: d.average_max_temp, precip: d.actual_precipitation })),
   }));
   console.log("Transformed cityData:", cityData);
 
@@ -177,4 +178,19 @@ d3.csv("data/weather.csv").then((data) => {
   // 6.b: ADD LABELS FOR CHART 2
 
   // 7.b: ADD INTERACTIVITY FOR CHART 2
+
+
+    // ==========================================
+  //         CHART 3 (if applicable)
+  // ==========================================
+
+  // 3.b: SET SCALES FOR CHART 3
+
+  // 4.b: PLOT DATA FOR CHART 3
+
+  // 5.b: ADD AXES FOR CHART
+
+  // 6.b: ADD LABELS FOR CHART 3
+
+  // 7.b: ADD INTERACTIVITY FOR CHART 3
 });
