@@ -20,6 +20,14 @@ const svgBar = d3
   .append("g")
   .attr("transform", `translate(${margin.left},${margin.top})`);
 
+const svgPrecipLine = d3
+  .select("#lineChart2")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", `translate(${margin.left},${margin.top})`);
+
 // (If applicable) Tooltip element for interactivity
 // const tooltip = ...
 
@@ -248,17 +256,93 @@ d3.csv("data/weather.csv").then((data) => {
   // 7.b: ADD INTERACTIVITY FOR CHART 2
 
 
-    // ==========================================
+  // ==========================================
   //         CHART 3 (if applicable)
   // ==========================================
 
+  const cityPrecipData = cities.map((city) => ({
+    city: city,
+    values: data
+      .filter((d) => d.city === city)
+      .map((d) => ({ date: d.date, precip: d.actual_precip })),
+  }));
+  console.log("Transformed cityPrecipData:", cityPrecipData);
+
   // 3.b: SET SCALES FOR CHART 3
+  const xPrecipDate = d3
+    .scaleTime()
+    .domain(d3.extent(data, (d) => d.date))
+    .range([0, width]);
+  const yPrecip = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d) => d.actual_precip) + 2])
+    .range([height, 0]);
 
   // 4.b: PLOT DATA FOR CHART 3
+  const precipLine = d3.line()
+  .x((d) => xPrecipDate(d.date))
+  .y((d) => yPrecip(d.precip))
+
+  svgPrecipLine.selectAll(".line")
+  .data(cityPrecipData)
+  .enter()
+  .append("path")
+  .attr("class", "line")
+  .attr("fill", "none")
+  .attr("stroke", (d) => color(d.city))
+  .attr("stroke-width", 2)
+  .attr("d", (d) => precipLine(d.values))
 
   // 5.b: ADD AXES FOR CHART
 
+  svgPrecipLine.append("g")
+  .attr("transform", `translate(0, ${height})`)
+  .call(d3.axisBottom(xPrecipDate)
+    .tickFormat(d3.timeFormat("%m/%d/%Y"))
+    .ticks(8)
+  )
+  .selectAll("text")
+  .attr("transform", "rotate(35)")
+  .style("text-anchor", "start");
+
+  svgPrecipLine.append("g")
+    .call(d3.axisLeft(yPrecip)
+  )
+
   // 6.b: ADD LABELS FOR CHART 3
+  svgPrecipLine
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -50)
+    .attr("x", -height / 2)
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .text("Rainfall (in)");
+
+  // Adding a Precipitation legend
+  const precipLegend = svgPrecipLine.selectAll(".legend")
+    .data(cities)
+    .enter()
+    .append("g")
+    .attr("class", "legend")
+    .attr("transform", (d, i) => `translate(${i * 125}, ${height - 325})`);
+
+  precipLegend
+    .append("rect")
+    .attr("x", 40)
+    .attr("width", 18)
+    .attr("height", 6)
+    .style("fill", color);
+
+  precipLegend
+    .append("text")
+    .attr("x", 70)
+    .attr("y", 5)
+    .attr("dy", ".32em")
+    .style("font-size", "12.5px")
+    .style("fill", "black")
+    .style("font-weight", "none")
+    .text((d) => d);
 
   // 7.b: ADD INTERACTIVITY FOR CHART 3
 });
