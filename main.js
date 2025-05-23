@@ -30,8 +30,7 @@ d3.csv("data/weather.csv").then((data) => {
   data.forEach((d) => {
     d.date = d3.timeParse("%m/%d/%Y")(d.date);
     d.average_max_temp = +d.average_max_temp;
-    d.cities = d.city;
-    d.annual_precip = +d.annual_precipitation;
+    d.actual_precip = +d.actual_precipitation;
   });
 
   // Group data by city
@@ -170,38 +169,49 @@ d3.csv("data/weather.csv").then((data) => {
   //         CHART 2 (if applicable)
   // ==========================================
 
-  const precip = d3.rollup(data,
-    sum => d3.sum(sum,d => d.annual_precip),
-    d => d.cities
+  const barCleanData = data.filter(d =>
+    d.actual_precip != null
+    && d.cities != ''
   );
-  const precipData = Array.from(precip, 
-    ([city, sum]) => ({city,sum}));
 
-  precipData.sort((a,b) => a.sum - b.sum);
+  console.log("Bar Clean Data", barCleanData);
 
-  console.log ("Precipitation data", precipData);
+  const barMap = d3.rollup(barCleanData,
+    v => d3.sum(v,d => d.actual_precip),
+    d => d.city
+  );
+
+  console.log("Bar Map", barMap);
+
+  const barFinalArr = Array.from(barMap, 
+    ([city, sum]) => ({ city, sum })
+  )
+  .sort((a,b) => a.sum - b.sum);
+
+  console.log("Bar Final", barFinalArr);
+
   // 3.b: SET SCALES FOR CHART 2
   const xBarScale = d3.scaleBand() // Use instead of scaleLinear() for bar charts
-    .domain(precipData.map(d => d.cities)) // Extract unique categories for x-axis
+    .domain(barFinalArr.map(d => d.city)) // Extract unique categories for x-axis
     .range([0, width]) // START low, INCREASE
     .padding(0.1);
 
   const yBarScale = d3.scaleLinear()
-    .domain([0, d3.max(precipData, d => d.annual_precip)])
+    .domain([0, 50])
     .range([height,0]);
   
 
   // 4.b: PLOT DATA FOR CHART 2
 
   svgBar.selectAll("rect")
-		.data(precipData)
+		.data(barFinalArr)
 		.enter()
 		.append("rect")
-        .attr("x", d => xBarScale(d.cities)) // horizontal position
-        .attr("y", d => yBarScale(d.annual_precip)) // vert position
-        .attr("width", xBarScale.bandwidth())
-        .attr("height", d => height - yBarScale(d.score))
-        .attr("fill", "blue");
+      .attr("x", d => xBarScale(d.city)) // horizontal position
+      .attr("y", d => yBarScale(d.sum)) // vert position
+      .attr("width", xBarScale.bandwidth())
+      .attr("height", d => height - yBarScale(d.sum))
+      .attr("fill", "blue");
 
   // 5.b: ADD AXES FOR CHART
 
@@ -214,26 +224,26 @@ d3.csv("data/weather.csv").then((data) => {
 
   // 6.b: ADD LABELS FOR CHART 2
 
-  svgBar.append("text")
-        .attr("class", "title")
-        .attr("x", width / 2)
-        .attr("y", -margin.top / 2)
-        .text("Annual Precipitation");
+  //svgBar.append("text")
+    //  .attr("class", "title")
+    //  .attr("x", width / 2)
+    //  .attr("y", -margin.top / 2)
+    //  .text("Actual Precipitation");
 
     // 7.b x-axis label
     svgBar.append("text")
-        .attr("class", "axis-label")
-        .attr("x", width / 2)
-        .attr("y", height + (margin.bottom / 2) + 10)
-        .text("Annual Precipitation Sums");
+      .attr("class", "axis-label")
+      .attr("x", width / 2)
+      .attr("y", height + (margin.bottom / 2) + 10)
+      .text("Cities");
 
     // 7.c y-axis label
     svgBar.append("text")
-        .attr("class", "axis-label")
-        .attr("transform", "rotate(-90)")
-        .attr("y", -margin.left / 2)
-        .attr("x", -height / 2)
-        .text("Cities");
+      .attr("class", "axis-label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -margin.left / 2)
+      .attr("x", -height / 2)
+      .text("Actual Precipitation Sums");
 
   // 7.b: ADD INTERACTIVITY FOR CHART 2
 
