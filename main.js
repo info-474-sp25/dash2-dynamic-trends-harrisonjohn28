@@ -196,7 +196,7 @@ d3.csv("data/weather.csv").then((data) => {
   )
   .sort((a,b) => a.sum - b.sum);
 
-  console.log("Bar Final", barFinalArr);
+  //console.log("Bar Final", barFinalArr);
 
   // 3.b: SET SCALES FOR CHART 2
   const xBarScale = d3.scaleBand() // Use instead of scaleLinear() for bar charts
@@ -254,6 +254,46 @@ d3.csv("data/weather.csv").then((data) => {
       .text("Actual Precipitation Sums");
 
   // 7.b: ADD INTERACTIVITY FOR CHART 2
+
+  function updateChart (filteredData) {
+
+    var newData = filteredData.filter(d => 
+      d.actual_precip != null 
+      && d.cities !== ''
+    );
+  
+    const newMap = d3.rollup(
+      newData,
+      v => d3.sum(v, d => d.actual_precip),
+      d => d.city
+    );
+    
+    const newFinalArr = Array.from(barMap, ([city, sum]) => ({ city, sum }))
+      .sort((a, b) => a.sum - b.sum);
+
+    svgBar.selectAl
+    |("rect").remove();
+
+    svgBar.selectAll("rect")
+		.data(newFinalArr)
+		.enter()
+		.append("rect")
+      .attr("x", d => xBarScale(d.city)) // horizontal position
+      .attr("y", d => yBarScale(d.sum)) // vert position
+      .attr("width", xBarScale.bandwidth())
+      .attr("height", d => height - yBarScale(d.sum))
+      .attr("fill", "blue");
+  }
+
+  d3.select('#categorySelect').on('change', function() {
+    let filteredData = data;
+    if (this.value !== "all") {
+      filteredData = data.filter(d => 
+        String(d.date).endsWith(`/${this.value}`)
+      );
+    }
+    updateChart(filteredData);
+  });
 
 
   // ==========================================
