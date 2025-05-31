@@ -294,34 +294,39 @@ d3.csv("data/weather.csv").then((data) => {
 
   // 7.b: ADD INTERACTIVITY FOR CHART 2
 
-  /*
+  function updateBarChart(selectedYear) {
+    // John comments (this also applies to svgPrecip)
+    // Filtering down for specific years
+    const barYearData = barCleanData.filter(function(d) {
+      if(selectedYear === "All Data") {
+        // Catchall so it always returns all data
+        return d.date.getYear() === d.date.getYear();
+      } else {
+        // Selected year is a string, so we have to convert to num.
+        // Date.getYear() is funky post-2000, so it returns 100+the decade
+        // (eg. 2014 returns 114), so we have to take off 1900 to get aligned.
+        return d.date.getYear() === Number(selectedYear)-1900;
+      }
+    })
 
-  function updateChart (filteredData) {
-
-    var selectedCategoryData = flattenedData.filter(function(d) {
-      return d.category === filteredData;
-    });
-
-    //var newData = filteredData.filter(d => 
-      //d.actual_precip != null 
-      //&& d.cities !== ''
-    //);
-  
-    //const newMap = d3.rollup(
-      //newData,
-      //v => d3.sum(v, d => d.actual_precip),
-      //d => d.city
-    //);
+    // Basically repeating the process from above but with barYearData
+    // (this isn't present in svgPrecip since no rollups/aggregation was needed.)
+    const barYearMap = d3.rollup(barYearData,
+      v => d3.sum(v,d => d.actual_precip),
+      d => d.city
+    );
     
-    //const newFinalArr = Array.from(newMap, ([city, sum]) => ({ city, sum }))
-      //.sort((a, b) => a.sum - b.sum);
+    const barYearArray = Array.from(barYearMap,
+      ([city, sum]) => ({city, sum})
+    )
+    .sort((a,b) => a.sum - b.sum);
 
-    //svgBar.selectAll("rect").remove();
+    // Wiping all the existing rectangles...
+    svgBar.selectAll("rect").remove();
 
-    
-
+    // ... then redrawing them using our filtered array.
     svgBar.selectAll("rect")
-		.data(selectedCategoryData)
+		.data(barYearArray)
 		.enter()
 		.append("rect")
       .attr("x", d => xBarScale(d.city)) // horizontal position
@@ -329,14 +334,14 @@ d3.csv("data/weather.csv").then((data) => {
       .attr("width", xBarScale.bandwidth())
       .attr("height", d => height - yBarScale(d.sum))
       .attr("fill", "blue");
-      */
-  //}
-      
+  }
 
-  //d3.select("#categorySelect").on("change", function() {
-    //var selectedCategory = d3.select(this).property("value");
-    //updateChart(selectedCategory); // Update the chart based on the selected option
-  //});
+  // When the dropdown for year selection changes, take the value
+  // and pass it to updateBarChart.
+  d3.select("#yearSelect").on("change", function() {
+    const selectedCategory = d3.select(this).property("value");
+    updateBarChart(selectedCategory);
+  })
 
 
   // ==========================================
