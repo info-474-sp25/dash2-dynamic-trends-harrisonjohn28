@@ -428,4 +428,31 @@ d3.csv("data/weather.csv").then((data) => {
     .text((d) => d);
 
   // 7.b: ADD INTERACTIVITY FOR CHART 3
+  function updatePrecipChart(selectedCity) {
+    const precipCategoryData = cityPrecipData.filter(function(d) {
+      if(selectedCity === "All Cities") {
+        return d.city === d.city;
+      } else {
+        return d.city === selectedCity
+      }
+      
+    });
+
+    svgPrecipLine.selectAll(".line").remove();
+
+    svgPrecipLine.selectAll(".line")
+      .data(precipCategoryData)
+      .enter()
+      .append("path")
+      .attr("class", "line")
+      .attr("fill", "none")
+      .attr("stroke", (d) => color(d.city))
+      .attr("stroke-width", 2)
+      .attr("d", (d) => precipLine(d.values))
+  }
+
+  d3.select("#citySelect").on("change", function() {
+    const selectedCategory = d3.select(this).property("value");
+    updatePrecipChart(selectedCategory);
+  })
 });
