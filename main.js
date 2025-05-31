@@ -177,40 +177,45 @@ d3.csv("data/weather.csv").then((data) => {
   //         CHART 2 (if applicable)
   // ==========================================
 
+
   //const barCleanData = data.filter(d =>
     //d.actual_precip != null
     //&& d.cities != ''
+    //).map(d => {
+    //let year;
+    //const dateStr = String(d.date);
+    
+    // Try different date formats
+    //if (dateStr.includes('2014')) {
+      //year = 2014;
+    //} else if (dateStr.includes('2015')) {
+      //year = 2015;
+    //}
+
+    //return {
+      //...d,
+      //year_group: year
+   // };
+  //});
+
+  //const barMap = d3.rollup(barCleanData, 
+    //v => d3.rollup(v, 
+            //v => d3.sum(v,d => d.actual_precip), 
+            //d => d.year_group 
+        //),
+    //d => d.city 
   //);
 
   const barCleanData = data.filter(d =>
     d.actual_precip != null
     && d.cities != ''
-  ).map(d => {
-    // More robust year extraction
-    let year;
-    const dateStr = String(d.date);
-    
-    // Try different date formats
-    if (dateStr.includes('2014')) {
-      year = 2014;
-    } else if (dateStr.includes('2015')) {
-      year = 2015;
-    }
-
-    return {
-      ...d,
-      year_group: year
-    };
-  });
+  );
 
   console.log("Bar Clean Data", barCleanData);
 
-  const barMap = d3.rollup(barCleanData, 
-    v => d3.rollup(v, 
-            v => d3.sum(v,d => d.actual_precip), 
-            d => d.year_group 
-        ),
-    d => d.city 
+  const barMap = d3.rollup(barCleanData,
+    v => d3.sum(v,d => d.actual_precip),
+    d => d.city
   );
 
   console.log("Bar Map", barMap);
@@ -220,13 +225,16 @@ d3.csv("data/weather.csv").then((data) => {
   )
   .sort((a,b) => a.sum - b.sum);
 
+  console.log("Bar Final", barFinalArr);
+
+/*
   const flattenedData = [];
     barMap.forEach((yearMap, category) => {
         yearMap.forEach((sum, year) => {
             flattenedData.push({ year, sum, category });
         });
     });
-
+*/
   //console.log("Bar Final", barFinalArr);
 
   // 3.b: SET SCALES FOR CHART 2
@@ -286,6 +294,8 @@ d3.csv("data/weather.csv").then((data) => {
 
   // 7.b: ADD INTERACTIVITY FOR CHART 2
 
+  /*
+
   function updateChart (filteredData) {
 
     var selectedCategoryData = flattenedData.filter(function(d) {
@@ -306,7 +316,9 @@ d3.csv("data/weather.csv").then((data) => {
     //const newFinalArr = Array.from(newMap, ([city, sum]) => ({ city, sum }))
       //.sort((a, b) => a.sum - b.sum);
 
-    svgBar.selectAll("rect").remove();
+    //svgBar.selectAll("rect").remove();
+
+    
 
     svgBar.selectAll("rect")
 		.data(selectedCategoryData)
@@ -317,12 +329,14 @@ d3.csv("data/weather.csv").then((data) => {
       .attr("width", xBarScale.bandwidth())
       .attr("height", d => height - yBarScale(d.sum))
       .attr("fill", "blue");
-  }
+      */
+  //}
+      
 
-  d3.select("#categorySelect").on("change", function() {
-    var selectedCategory = d3.select(this).property("value");
-    updateChart(selectedCategory); // Update the chart based on the selected option
-  });
+  //d3.select("#categorySelect").on("change", function() {
+    //var selectedCategory = d3.select(this).property("value");
+    //updateChart(selectedCategory); // Update the chart based on the selected option
+  //});
 
 
   // ==========================================
