@@ -65,7 +65,7 @@ d3.csv("data/weather.csv").then((data) => {
   const color = d3
     .scaleOrdinal()
     .domain(cities)
-    .range(["#4285F4", "#EA4335", "#FBBC05", "#34A853", "#FF6D01", "#00B9E6"]);
+    .range(["#4285F4", "#EA4335", "#FBBC05", "#34A853", "#c5b4e3", "#2ad2c9"]);
 
   // 4.a: PLOT DATA FOR CHART 1
   const line = d3
@@ -91,7 +91,8 @@ d3.csv("data/weather.csv").then((data) => {
     .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%m/%d/%Y")).ticks(8))
     .selectAll("text")
     .attr("transform", "rotate(35)")
-    .style("text-anchor", "start");
+    .style("text-anchor", "start")
+    .style("font-size", "14px");
 
   svg1_RENAME.append("g").call(d3.axisLeft(y));
 
