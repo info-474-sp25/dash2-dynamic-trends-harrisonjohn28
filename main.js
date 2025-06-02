@@ -259,7 +259,7 @@ d3.csv("data/weather.csv").then((data) => {
       .attr("y", d => yBarScale(d.sum)) // vert position
       .attr("width", xBarScale.bandwidth())
       .attr("height", d => height - yBarScale(d.sum))
-      .attr("fill", "blue");
+      .attr("fill", (d) => color(d.city));
 
   // 5.b: ADD AXES FOR CHART
 
@@ -334,7 +334,7 @@ d3.csv("data/weather.csv").then((data) => {
       .attr("y", d => yBarScale(d.sum)) // vert position
       .attr("width", xBarScale.bandwidth())
       .attr("height", d => height - yBarScale(d.sum))
-      .attr("fill", "blue");
+      .attr("fill", (d) => color(d.city));
   }
 
   // When the dropdown for year selection changes, take the value
