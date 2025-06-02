@@ -277,12 +277,12 @@ d3.csv("data/weather.csv").then((data) => {
     //  .attr("y", -margin.top / 2)
     //  .text("Actual Precipitation");
 
-    // 7.b x-axis label
-    svgBar.append("text")
-      .attr("class", "axis-label")
-      .attr("x", width / 2)
-      .attr("y", height + (margin.bottom / 2) + 10)
-      .text("Cities");
+    // 7.b x-axis label (Removed in response to feedback 6/2)
+    // svgBar.append("text")
+    //   .attr("class", "axis-label")
+    //   .attr("x", width / 2)
+    //   .attr("y", height + (margin.bottom / 2) + 10)
+    //   .text("Cities");
 
     // 7.c y-axis label
     svgBar.append("text")
@@ -290,7 +290,7 @@ d3.csv("data/weather.csv").then((data) => {
       .attr("transform", "rotate(-90)")
       .attr("y", -margin.left / 2)
       .attr("x", -height / 2)
-      .text("Actual Precipitation Sums");
+      .text("Actual Precipitation Sums (in)");
 
   // 7.b: ADD INTERACTIVITY FOR CHART 2
 
