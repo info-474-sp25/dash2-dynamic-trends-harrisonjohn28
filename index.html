@@ -14,10 +14,16 @@
         <p><strong>Author(s):</strong> John Harrison, Manav Agarwal, Adam Skoglund</p>
         <p><strong>Documentation:</strong> <a href="https://docs.google.com/document/d/1Kkp-zizYMxTI9aQuR4SFyrWeOCfojrQrGQJFprJCD-I/edit?usp=sharing" target="_blank">Here</a></p>
     </div>
-    
-    <!-- INTERACTIVE WIDGETS -->
-    <div class="item horizontal-container">
-        <div class="item">
+
+    <!-- CHART(S) -->
+    <div class="item chart-container">
+        <h2>Average Max Temperature by City</h2>
+        <svg id="lineChart1" width="900" height="400"></svg> <!-- If you change this ID name, you must change it in main.js too -->
+    </div>
+    <!-- DELETE THE FOLLOWING DIV IF YOU ONLY HAVE 1 CHART. -->
+
+    <div>
+        <div class="item horizontal-container">
             <label for="yearSelect">Select year for variation in precipitation:</label>
 
             <div class="select-container">
@@ -29,7 +35,14 @@
             </div>
         </div>
 
-        <div class="item">
+        <div class="item chart-container">
+            <h2>Variation in Actual Precipitation by City</h2>
+            <svg id="barChart" width="900" height="400"></svg>
+        </div>
+    </div>
+
+    <div>
+        <div class="item horizontal-container">
             <label for="citySelect">Select precipitation for:</label>
 
             <div class="select-container">
@@ -44,22 +57,17 @@
                 </select>                    
             </div>
         </div>
+
+        <div class="item chart-container">
+            <h2>Precipitation by Date, by City</h2>
+            <svg id="lineChart2" width="900" height="400"></svg>
+        </div>
+
     </div>
 
-    <!-- CHART(S) -->
-    <div class="item chart-container">
-        <h2>Average Max Temperature by City</h2>
-        <svg id="lineChart1" width="900" height="400"></svg> <!-- If you change this ID name, you must change it in main.js too -->
-    </div>
-    <!-- DELETE THE FOLLOWING DIV IF YOU ONLY HAVE 1 CHART. -->
-    <div class="item chart-container">
-        <h2>Variation in Actual Precipitation by City</h2>
-        <svg id="barChart" width="900" height="400"></svg>
-    </div>
-    <div class="item chart-container">
-        <h2>Precipitation by Date, by City</h2>
-        <svg id="lineChart2" width="900" height="400"></svg>
-    </div>
+    
+    
+    
     <script src="main.js"></script>
 </body>
 </html>
